@@ -127,3 +127,7 @@ Contribuições são bem-vindas! Por favor, abra uma issue ou pull request para 
 ## 📞 Suporte
 
 Para dúvidas ou problemas, consulte a documentação da AWS ou abra uma issue no repositório.
+
+## Link documentação SDK do S3
+
+https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/command/PutObjectCommand/
