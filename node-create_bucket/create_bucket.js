@@ -22,7 +22,7 @@ const s3 = new S3Client({
 async function createBucket(){
 	try {
     	var params = {
-            Bucket: "iago", 
+            Bucket: "20250826-iago-catlostandfoundwebsite", 
         };
             
         const data = await s3.send(new CreateBucketCommand(params));
