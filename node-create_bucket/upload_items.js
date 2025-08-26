@@ -14,24 +14,39 @@
 	limitations under the License.
 */
 
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import FS from "fs";
 
-var
-    AWS = require("aws-sdk"),
-    S3API = new AWS.S3({
-        apiVersion: "2006-03-01",
-        region: "<FMI>"
-    }),
-    FS = require("fs"),
-    bucket_name_str = "<FMI>";
+const s3 = new S3Client({
+    region: "us-east-1"
+})
+
+const bucket_name_str = "20250826-iago-catlostandfoundwebsite"
 
 
-function uploadItemAsBinary(key_name_str, content_type_str, bin){
-    <FMI>
+async function uploadItemAsBinary(key_name_str, content_type_str, bin) {
+    try {
+    	var input = {
+            Bucket: bucket_name_str,
+            Key: key_name_str,
+            ContentType: content_type_str,
+            Body: bin
+        };
+            
+        const data = await s3.send(new PutObjectCommand(input));
+        console.log("Documento enviado com sucesso:", data)
+	} catch (e) {
+	    console.error("Error ao enviar documento", e);
+	}
 }
 
-(function init(){
-    var cat_pic_bin = FS.readFileSync("../cat.jpg");
-    uploadItemAsBinary("cat.jpg", "image/jpg", cat_pic_bin);
-    var index_page_bin = FS.readFileSync("../index.html");
+
+function init() {
+    var cat_pic_bin = FS.readFileSync("./cat.png");
+    uploadItemAsBinary("cat.png", "image/png", cat_pic_bin);
+    var index_page_bin = FS.readFileSync("./index.html");
     uploadItemAsBinary("index.html", "text/html", index_page_bin);
-})();
+};
+
+
+init();
