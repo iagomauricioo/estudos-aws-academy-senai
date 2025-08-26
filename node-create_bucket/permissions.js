@@ -14,21 +14,28 @@
 	limitations under the License.
 */
 
-var
-    AWS = require("aws-sdk"),
-    S3API = new AWS.<FMI>({
-        apiVersion: "2006-03-01",
-        region: "<FMI>"
-    }),
-    PUBLIC_POLICY_STR = JSON.stringify(require("../public_policy.json"));
+import { S3Client, PutBucketPolicyCommand } from "@aws-sdk/client-s3";
+import fs from "fs";
 
-(function addPublicBucketPolicy(){
-        params = {
-            Bucket: "<FMI>",
+const s3 = new S3Client({
+    region: "us-east-1"
+})
+
+
+const PUBLIC_POLICY_STR = fs.readFileSync("./public_policy.json", "utf-8");
+const BUCKET_NAME = "20250826-iago-catlostandfoundwebsite"
+
+async function addPublicBucketPolicy(){
+    try {
+        const params = {
+            Bucket: BUCKET_NAME,
             Policy: PUBLIC_POLICY_STR
-
         };
-        S3API.<FMI>(params, function(error, <FMI>){
-            console.log(error, data);
-        });
-})();
+        const data = await s3.send(new PutBucketPolicyCommand(params));
+        console.log("Política enviada:", data);
+    } catch (e) {
+        console.log("Erro ao criar política de bucket:", e);
+    }
+};
+
+addPublicBucketPolicy();
