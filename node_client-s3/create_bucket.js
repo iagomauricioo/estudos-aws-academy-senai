@@ -13,7 +13,7 @@
 	See the License for the specific language governing permissions and
 	limitations under the License.
 */
-const { S3Client, CreateBucketCommand } = require("@aws-sdk/client-s3");
+import { S3Client, CreateBucketCommand } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
     region: "us-east-1"
