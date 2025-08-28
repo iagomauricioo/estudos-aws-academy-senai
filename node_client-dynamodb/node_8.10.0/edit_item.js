@@ -1,26 +1,32 @@
-var
-    AWS = require("aws-sdk"),
-    DDB = new AWS.<FMI>({
-        apiVersion: "2012-08-10",
-        region: "<FMI>"
-    });
-(function editItemInDynamo(){
-    var params = {
-        <FMI>: "lostcats",
-        Key:{
-            petname: {
-                S: "Hosepipe"
-            }
-        },
-        UpdateExpression: "<FMI>",
-        <FMI>: {
-            ":b": {
-                "S": "British Shorthair"
-            }
-        },
-        ReturnValues: "UPDATED_NEW"
-    };
-    DDB.<FMI>(params, function(err, data){
-        console.log(err, data);
-    });
-})();
+import { DynamoDBClient, UpdateItemCommand } from "@aws-sdk/client-dynamodb";
+
+const client = new DynamoDBClient();
+
+const input = {
+    TableName: "lostcats",
+    Key:{
+        petname: {
+            S: "Hosepipe"
+        }
+    },
+    UpdateExpression: "SET breed = :b",
+    ExpressionAttributeValues: {
+        ":b": {
+            "S": "British Shorthair"
+        }
+    },
+    ReturnValues: "UPDATED_NEW"
+}
+
+async function editItemInDynamo(input) {
+    try {
+        const command = new UpdateItemCommand(input);
+        const response = await client.send(command);
+        console.log("Item editado com sucesso: ", response);
+    }
+    catch (e) {
+        console.error("Falha ao editar item: ", e);
+    }
+}
+
+editItemInDynamo(input);
