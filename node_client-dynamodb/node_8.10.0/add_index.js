@@ -1,36 +1,40 @@
-var 
-    AWS = require("aws-sdk"),                              
-    DDB = new AWS.DynamoDB({
-        apiVersion: "2012-08-10",
-        region: "<FMI>"
-    });                                                    
+import { DynamoDBClient, UpdateTableCommand } from "@aws-sdk/client-dynamodb";
 
-(function addIndex(){
-    var 
-        params = {
-            TableName: "lostcats",
-            AttributeDefinitions: [{
+const client = new DynamoDBClient();
+
+const input = {
+    TableName: "lostcats",
+    AttributeDefinitions: [{
+        AttributeName: "breed",
+        AttributeType: "S"
+    }],
+    GlobalSecondaryIndexUpdates: [{
+        Create: {
+            IndexName: "breed_index",
+            KeySchema: [{
                 AttributeName: "breed",
-                AttributeType: "S"
+                KeyType: "HASH"
             }],
-            <FMI>: [{
-                Create: {
-                    <FMI>: "breed_index",
-                    KeySchema: [{
-                        <FMI>: "breed",
-                        KeyType: "<FMI>"
-                    }],
-                    Projection: {
-                        ProjectionType: "<FMI>"
-                    },
-                    ProvisionedThroughput: {
-                        ReadCapacityUnits: 1, 
-                        WriteCapacityUnits: 1
-                    }
-                }
-            }]
-        };
-     DDB.<FMI>(params, function(err, data){
-         console.log(err, data);             
-     });
-})();
+            Projection: {
+                ProjectionType: "ALL"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: 1, 
+                WriteCapacityUnits: 1
+            }
+        }
+    }]
+}                                                 
+
+async function addIndex(input) {
+     try {
+         const command = new UpdateTableCommand(input);
+         const response = await client.send(command);
+         console.log("Tabela atualizada: ", response);
+     }
+     catch (e) {
+         console.error("Erro ao atualizar tabela: ", e);
+     }
+}
+
+addIndex(input);
