@@ -1,42 +1,44 @@
+import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 
-var 
-    AWS = require("aws-sdk"),                               
-    DDB = new AWS.DynamoDB({
-        apiVersion: "2012-08-10",
-        region: "<FMI>"
-    });                                                     
+const client = new DynamoDBClient();
 
-(function uploadItemstoDynamoDB(){
-    var 
-        cat_1 = {
-            <FMI>{
-                "petname":{
-                    S: "Puddles"
-                },
-                "breed":{
-                    S: "Russian Blue"
-                }
-            }, 
-            <FMI>: "TOTAL", 
-            <FMI>: "lostcats"
-        };
-     DDB.putItem(cat_1, function(err, data){   
-         console.log(err, data);         
-     });
-     var 
-        cat_2 = {
-            <FMI>:{
-                "petname":{
-                    S: "Hosepipe"
-                },
-                "breed":{
-                    S: "Scottish Fold"
-                }
-            }, 
-            <FMI> "TOTAL", 
-            <FMI>: "lostcats"
-        };
-     DDB.<FMI>(cat_2, function(err, data){   
-         console.log(err, data);         
-     });
-})();
+const input = {
+    "cat_1": {
+        TableName: "lostcats",
+        Item: {
+            "petname":{
+                S: "Puddles"
+            },
+            "breed":{
+                S: "Russian Blue"
+            }
+        },
+        ReturnConsumedCapacity: "TOTAL", 
+    },
+    "cat_2": {
+        TableName: "lostcats",
+        Item: {
+            "petname":{
+                S: "Hosepipe"
+            },
+            "breed":{
+                S: "Scottish Fold"
+            }
+        }, 
+        ReturnConsumedCapacity: "TOTAL"
+    }
+}
+
+async function uploadItemstoDynamoDB(input) {
+     try {
+        const command = new PutItemCommand(input);
+        const response = await client.send(command);
+        console.log("Item enviado com sucesso: ", response);
+     } 
+     catch (e) {
+        console.log("Falha ao enviar item: ", e);
+     }
+}
+
+uploadItemstoDynamoDB(input.cat_1);
+uploadItemstoDynamoDB(input.cat_2);
