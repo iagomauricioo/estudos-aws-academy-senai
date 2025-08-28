@@ -32,10 +32,17 @@ node_client-dynamodb/
 ## 🚀 Funcionalidades
 
 1. **Criação de Tabela**: Cria tabela `lostcats` com chave primária `petname`
-2. **População de Dados**: Carrega dados iniciais de gatos perdidos
+2. **População de Dados**: Carrega dados iniciais de gatos perdidos (4 gatos)
 3. **Consultas**: Realiza consultas na tabela usando diferentes critérios
 4. **Índices**: Adiciona índices secundários para otimizar consultas
 5. **Edição**: Permite modificar informações dos gatos
+
+## ⚠️ Pré-requisitos Importantes
+
+**Antes de executar consultas**, você deve:
+1. ✅ Criar a tabela `lostcats`
+2. ✅ **Propagar o banco com dados iniciais** (usando `seed.js`)
+3. ✅ Confirmar que a propagação foi bem-sucedida
 
 ## 📊 Estrutura da Tabela
 
@@ -82,9 +89,54 @@ node create_table.js
 
 ### 2. Popular com Dados Iniciais
 
+**⚠️ IMPORTANTE**: Antes de executar consultas no banco de dados, você deve propagar a tabela `lostcats` com dados iniciais.
+
+#### Passo a Passo para Propagação:
+
+1. **Navegue para a pasta resources**:
+```bash
+cd ~/environment/resources
+```
+
+2. **Confirme se está na pasta correta** (deve conter `cat_data.json` e `seed.js`)
+
+3. **Instale as dependências**:
+```bash
+npm install aws-sdk
+```
+
+4. **Execute o script de propagação**:
 ```bash
 node seed.js
 ```
+
+5. **Confirme a execução** - você deve ver a mensagem "OK"
+
+6. **Volte para a pasta de código**:
+```bash
+cd ..
+cd node_8.10.0
+```
+
+7. **Verifique se a propagação foi bem-sucedida** executando uma consulta simples:
+```bash
+node query_table.js
+```
+
+#### ✅ Confirmação de Sucesso:
+- A mensagem "OK" deve aparecer após executar `seed.js`
+- A tabela deve conter 4 registros de gatos
+- Consultas subsequentes devem retornar dados válidos
+
+#### Arquivos de Propagação:
+- **`cat_data.json`**: Contém dados de 4 gatos perdidos (Puddles, Hosepipe, Dinka, Simba)
+- **`seed.js`**: Script que popula a tabela com os dados do JSON
+
+#### Dados Incluídos:
+- **Puddles**: Russian Blue, Male, encontrado em 2019-01-02
+- **Hosepipe**: British Shorthair, Male, encontrado em 2019-01-05  
+- **Dinka**: Black Moggie, Female, encontrado em 2019-03-02
+- **Simba**: Bengal, Male, encontrado em 2019-04-02
 
 ### 3. Consultar Dados
 
